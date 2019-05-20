@@ -2,15 +2,16 @@ package io.github.simonvar.guu.lexer
 
 import kotlin.collections.HashMap
 
-class Lexer(val source: String) {
+class Lexer(text: String) {
 
-    var line = 1
-        private set
+    var line = 0
+    var position = 0
 
-    var position = -1
-        private set
+    private val source = text.trimIndent()
+        .replace("\n{2,}".toRegex(), "\n")
+        .replace("\n +".toRegex(), "\n")
 
-    val words = HashMap<String, Word>()
+    private val words = HashMap<String, Word>()
 
     private val peek: Char
         get() = source[position]
@@ -23,14 +24,25 @@ class Lexer(val source: String) {
     }
 
     fun scan(): Token {
-        if (source.isBlank()) return Token(0)
-
         skip()
+
+        if (source.isBlank() || position >= source.length) return Token.Empty
+
+        if (peek == '\n') {
+            line += 1
+            next()
+            return Word.end
+        }
+
         if (peek.isDigit()) return tokenNumber()
         if (peek.isLetter()) return tokenWord()
         return Token(peek.toInt())
     }
 
+    fun reset() {
+        line = 1
+        position = 0
+    }
 
     private fun tokenNumber(): Token {
         var v = 0L
@@ -55,16 +67,14 @@ class Lexer(val source: String) {
 
     private fun skip() {
         while (true) {
-            next()
             if (position >= source.length) break
-            if (peek == ' ' || peek == '\t') continue
-            else if (peek == '\n') line.inc()
+            if (peek == ' ' || peek == '\t') next()
             else break
         }
     }
 
 
-    private fun next(){
+    private fun next() {
         position += 1
     }
 
