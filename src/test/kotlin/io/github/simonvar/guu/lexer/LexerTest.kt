@@ -1,5 +1,6 @@
 package io.github.simonvar.guu.lexer
 
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -18,7 +19,7 @@ class LexerTest {
                 set a 6
         """.trimIndent()
 
-    private val lex = Lexer(source)
+    private val lex = Lexer(source.lines())
 
     @Test
     fun `correct tokens test`() {
@@ -26,10 +27,11 @@ class LexerTest {
         val lexeme2 = lex.scan()
         val lexeme3 = lex.scan()
         val lexeme4 = lex.scan()
-        println(lexeme1)
-        println(lexeme2)
-        println(lexeme3)
-        println(lexeme4)
+
+        Assert.assertEquals(Tag.SUB, lexeme1.tag)
+        Assert.assertEquals(Tag.ID, lexeme2.tag)
+        Assert.assertEquals(Tag.END, lexeme3.tag)
+        Assert.assertEquals(Tag.SET, lexeme4.tag)
     }
 
 }
