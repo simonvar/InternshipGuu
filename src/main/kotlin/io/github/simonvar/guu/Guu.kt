@@ -49,8 +49,6 @@ class Guu(
                         command()
                     }
 
-                    override fun stepOver() {}
-
                     override fun eof() {
                         return
                     }
@@ -59,20 +57,8 @@ class Guu(
             }
 
             STEP_OVER -> {
-                parser.next(object : ParserStepListener {
-                    override fun step() {
-
-                    }
-
-                    override fun stepOver() {
-                        command()
-                    }
-
-                    override fun eof() {
-                        return
-                    }
-
-                })
+                println("not implemented :(")
+                command()
             }
 
             TRACE -> {

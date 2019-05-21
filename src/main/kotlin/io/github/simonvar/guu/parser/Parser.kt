@@ -54,7 +54,6 @@ class Parser(
         lexer.currentLine = prev
 
         stepListener.step()
-        stepListener.stepOver()
     }
 
     private fun call(stepListener: ParserStepListener) {

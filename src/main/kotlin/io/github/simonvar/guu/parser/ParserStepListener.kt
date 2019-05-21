@@ -4,8 +4,6 @@ interface ParserStepListener {
 
     fun step()
 
-    fun stepOver()
-
     fun eof()
 
 }
