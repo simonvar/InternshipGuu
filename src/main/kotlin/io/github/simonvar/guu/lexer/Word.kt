@@ -8,6 +8,7 @@ class Word(val lexeme: String, tag: Int) : Token(tag) {
         val set = Word("set", Tag.SET)
         val print = Word("print", Tag.PRINT)
         val end = Word("\n", Tag.END)
+        val main = Word("main", Tag.ID)
     }
 
     override fun toString() = "token: $lexeme [$tag]"

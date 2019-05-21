@@ -19,6 +19,7 @@ open class Token(val tag: Int) {
 
     companion object {
         val Empty = Token(-1)
+        val EOF = Token(-2)
     }
 
 }

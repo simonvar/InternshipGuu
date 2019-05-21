@@ -2,19 +2,28 @@ package io.github.simonvar.guu.lexer
 
 import kotlin.collections.HashMap
 
-class Lexer(text: String) {
+class Lexer(private val l: List<String>) {
 
-    var line = 0
-    var position = 0
+    var currentLine: Int
+        get() = position + 1
+        set(value) {
+            index = 0
+            position = value - 1
+        }
 
-    private val source = text.trimIndent()
-        .replace("\n{2,}".toRegex(), "\n")
-        .replace("\n +".toRegex(), "\n")
+    val lines = l.filter {
+        it.isNotBlank()
+    }
 
+    private var position = 0
+    private var index = 0
     private val words = HashMap<String, Word>()
 
+    private val line: String
+        get() = lines[position]
+
     private val peek: Char
-        get() = source[position]
+        get() = line[index]
 
     init {
         reserve(Word.sub)
@@ -24,15 +33,21 @@ class Lexer(text: String) {
     }
 
     fun scan(): Token {
-        skip()
+        if (position >= lines.size) {
+            return Token.EOF
+        }
 
-        if (source.isBlank() || position >= source.length) return Token.Empty
+        if (lines.isNullOrEmpty() || line.isBlank()) {
+            nextLine()
+            return Token.Empty
+        }
 
-        if (peek == '\n') {
-            line += 1
-            next()
+        if (index >= line.length || peek == '\n') {
+            nextLine()
             return Word.end
         }
+
+        skip()
 
         if (peek.isDigit()) return tokenNumber()
         if (peek.isLetter()) return tokenWord()
@@ -40,16 +55,16 @@ class Lexer(text: String) {
     }
 
     fun reset() {
-        line = 1
         position = 0
+        index = 0
     }
 
     private fun tokenNumber(): Token {
         var v = 0L
         do {
             v = 10 * v + Character.digit(peek, 10)
-            next()
-        } while (position < source.length && peek.isDigit())
+            nextIndex()
+        } while (index < line.length && peek.isDigit())
         return Num(v)
     }
 
@@ -57,8 +72,8 @@ class Lexer(text: String) {
         val buffer = StringBuilder()
         do {
             buffer.append(peek)
-            next()
-        } while (position < source.length && peek.isLetter())
+            nextIndex()
+        } while (index < line.length && peek.isLetter())
         val value = buffer.toString()
         return words.getOrPut(value) {
             Word(value, Tag.ID)
@@ -67,14 +82,19 @@ class Lexer(text: String) {
 
     private fun skip() {
         while (true) {
-            if (position >= source.length) break
-            if (peek == ' ' || peek == '\t') next()
+            if (index >= line.length) break
+            if (peek == ' ' || peek == '\t') nextIndex()
             else break
         }
     }
 
 
-    private fun next() {
+    private fun nextIndex() {
+        index += 1
+    }
+
+    private fun nextLine() {
+        index = 0
         position += 1
     }
 

@@ -5,3 +5,4 @@ sub main
 
 sub foo
     set a 2
+    set a 43
