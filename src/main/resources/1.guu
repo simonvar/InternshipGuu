@@ -1,17 +1,11 @@
 sub main
     set a 1
-    call foo
+    call bar
     print a
 
-sub foo
-    set a 2
-    set a 43
-    set b 21
-    call bar
-
 sub bar
-    print b
-    call baz
+    set a 34
+    print a
 
 sub baz
     print b

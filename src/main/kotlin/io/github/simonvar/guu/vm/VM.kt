@@ -21,13 +21,13 @@ class VM(heapSize: Int, stackSize: Int) : Environment {
 
     override fun printStackTrace() {
         stack.list.forEach { f ->
-            println("${f.word.lexeme} at ${f.position - 1}")
+            println("<<< ${f.word.lexeme} at ${f.position - 1}")
         }
     }
 
     override fun printVars() {
         heap.forEach { (w, n) ->
-            println("${w.lexeme} = ${n.value}")
+            println("<<< ${w.lexeme} = ${n.value}")
         }
     }
 

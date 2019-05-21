@@ -7,28 +7,10 @@ import io.github.simonvar.guu.parser.ParserStepListener
 import io.github.simonvar.guu.vm.VM
 import java.io.File
 
-
-fun main(args: Array<String>) {
-    if (args.isEmpty()) {
-        println("usage: guu <source path>")
-        return
-    }
-
-    val file = File(args[0])
-    if (file.isDirectory) {
-        println("${file.path} is not a file")
-        return
-    }
-
-    val guu = Guu(file.readText())
-    guu.run()
-}
-
-
 class Guu(
     source: String,
-    heapSize: Int = 30,
-    stackSize: Int = 30
+    heapSize: Int = 10,
+    stackSize: Int = 10
 ) : ParserMessageListener {
 
     private val lex = Lexer(source.lines())
@@ -57,7 +39,7 @@ class Guu(
             }
 
             STEP_OVER -> {
-                println("not implemented :(")
+                println("<<< not implemented :(")
                 command()
             }
 
@@ -73,13 +55,17 @@ class Guu(
 
             SOURCE -> {
                 lex.lines.forEachIndexed { index, s ->
-                    println("${index + 1}: $s")
+                    println("<<< ${index + 1}: $s")
                 }
                 command()
             }
 
+            EXIT -> {
+                println("<<< exit.")
+            }
+
             else -> {
-                println("wrong command.")
+                println("<<< wrong command.")
                 command()
             }
         }
@@ -104,6 +90,7 @@ class Guu(
         const val TRACE = "trace"
         const val VARS = "var"
         const val SOURCE = "source"
+        const val EXIT = "q"
     }
 
 }
